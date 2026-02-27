@@ -1,0 +1,250 @@
+import java.util.*;
+
+public class findlca {
+
+
+    static class Node{
+        int data;
+        Node left;
+        Node right;
+        public Node(int data){
+            this.data=data;
+            this.left=null;
+            this.right=null;
+        }
+    }
+    static class binarytree{
+        static int idx=-1;
+        public static Node buildtre(int nodes[]){
+            idx++;
+            if(nodes[idx]==-1){
+                return null;
+            }
+            Node newnode=new Node(nodes[idx]);
+            newnode.left=buildtre(nodes);
+            newnode.right=buildtre(nodes);
+            return newnode;
+
+        }
+    }
+    public static void preeorder(Node root){
+        if(root==null){
+            return;
+        }
+        System.out.print(root.data+" ");
+        preeorder(root.left);
+        preeorder(root.right);
+    }
+    public static void inorder(Node root){
+        if(root==null){
+            return;
+        }
+        inorder(root.left);
+        System.out.print(root.data+" ");
+        inorder(root.right);
+    }
+    public static void postorder(Node root){
+        if(root==null){
+            return;
+        }
+        preeorder(root.left);
+        preeorder(root.right);
+        System.out.print(root.data);
+    }
+    public static void traversal(Node root){
+        Queue<Node>q=new LinkedList<>();
+        q.add(root);
+        q.add(null);
+        while(!q.isEmpty()){
+            Node currnode=q.remove();
+            if(currnode==null){
+                System.out.println();
+                if(q.isEmpty()){
+                    break;
+                }else{
+                    q.add(null);
+                }
+            }else{
+                System.out.print(currnode.data+" ");
+                if(currnode.left!=null){
+                    q.add(currnode.left);
+                }if(currnode.right!=null){
+                    q.add(currnode.right);
+                }
+            }
+        }
+    }
+    public static int height(Node root){
+        if(root==null){
+            return 0;
+        }
+        int leftheight=height(root.left);
+        int rightheight=height(root.right);
+        return Math.max(leftheight,rightheight)+1;
+    }
+    public static int countnode(Node root){
+        if(root==null){
+            return 0;
+        }
+        int leftcount=countnode(root.left);
+        int rightcount=countnode(root.right);
+        return leftcount+rightcount+1;
+    }
+    public static int sumofnode(Node root){
+        if(root==null){
+            return 0;
+        }
+        int leftsum=sumofnode(root.left);
+        int rightsum=sumofnode(root.right);
+        return leftsum+rightsum+root.data;
+    }
+    // static class info{
+    //     int diam;
+    //     int height;
+    //     public info(int height,int diam){
+    //         this.height=height;
+    //         this.diam=diam;
+    //     }
+    // }
+//     public static info diamter(Node root){
+//         if(root==null){
+//             return new info(0, 0);
+//         }
+//         info leftinfo=diamter(root.left);
+//         info rightinfo=diamter(root.right);
+//         int selfdiam=Math.max(leftinfo.height, rightinfo.height)+1;
+//         int diam=Math.max(selfdiam, Math.max(leftinfo.diam, rightinfo.diam));
+//         int height=Math.max(leftinfo.height, rightinfo.height)+1;
+//         return new info(height, diam);
+//     }
+//     public static boolean isidentical(Node root,Node subroot){
+//         if(root==null &&subroot==null){
+//             return true;
+//         }else if(root==null||subroot==null||root.data!=subroot.data){
+//             return false;
+//         }
+//         if(!isidentical(root.left, subroot.left)){
+//             return false;
+//         }if(!isidentical(root.right, subroot.right)){
+//             return false;
+//         }
+//         return true;
+//     }
+// public static boolean issubroot(Node root,Node subroot){
+//     if(root==null){
+//         return false;
+//     }
+//     if(root.data==subroot.data){
+//         if(isidentical(root,subroot)){
+//             return true;
+//         }
+//     }
+//     return issubroot(root.left, subroot)||issubroot(root.right, subroot);
+// }
+static class info{
+    Node node;
+    int hd;
+    public info(Node node,int hd){
+        this.node=node;
+        this.hd=hd;
+    }
+
+}
+public static void topview(Node root){
+    if(root==null){
+        return;
+    }
+    Queue<info>q=new LinkedList<>();
+    HashMap<Integer,Node>map=new HashMap<>();
+    int max=0,min=0;
+    q.add(new info(root, 0));
+    q.add(null);
+    while(!q.isEmpty()){
+        info curr=q.remove();
+        if(curr==null)continue;
+        
+        if(!map.containsKey(curr.hd)){
+            map.put(curr.hd,curr.node);
+        }
+        if(curr.node.left!=null){
+            q.add(new info(curr.node.left, curr.hd-1));
+            min=Math.min(min,curr.hd-1);
+
+        }if(curr.node.right!=null){
+            q.add(new info(curr.node.right, curr.hd+1));
+            max=Math.max(max,curr.hd+1);
+        }
+    }
+    for(int i=min;i<=max;i++){
+        System.out.print(map.get(i).data+" ");
+    }
+
+}
+public static void kthelever(Node root,int k,int level){
+    
+    
+}
+public static void kthelevel(Node root,int k,int level){
+    if(root==null){
+        return;
+    }
+    if(level==k){
+        System.out.print(root.data);
+    }
+    kthelevel(root.left, k, level+1);
+    kthelevel(root.right, k, level+1);
+
+}
+public static boolean getpath(Node root,int n,ArrayList<Node>path){
+    if(root==null){
+        return false;
+    }
+    path.add(root);
+    if(root.data==n){
+        return true;
+    }
+    boolean foundleft=getpath(root.left, n, path);
+    boolean foundright=getpath(root.right, n, path);
+    if(foundleft||foundright){
+        return true;
+    }
+    path.remove(path.size()-1);
+    return false;
+
+}
+public static Node findlcaa(Node root,int n1,int n2){
+
+    ArrayList<Node>path1=new ArrayList<>();
+    ArrayList<Node>path2=new ArrayList<>();
+    int i=0;
+    getpath(root,n1,path1);
+    getpath(root,n2,path2);
+    for(;i<path1.size()&&i<path2.size();i++){
+        if(path1.get(i)!=path2.get(i)){
+            break;
+        }
+    }
+    Node lca=path1.get(i-1);
+    return lca;
+}
+
+    public static void main(String[] args) {
+Node root=new Node(1);
+root.left=new Node(2);
+root.right=new Node(3);
+root.left.left=new Node(4);
+root.left.right=new Node(5);
+root.right.left=new Node(6);
+root.right.right=new Node(7);
+
+Node subroot=new Node(2);
+subroot.left=new Node(4);
+subroot.right=new Node(5);
+kthelevel(root,3,1);
+int n1=4,n2=6;
+System.out.println(findlcaa(subroot, n1, n2));
+
+    }
+}
+
+
